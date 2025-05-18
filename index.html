@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verona's Study Group</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        :root {
+            --primary-bg: #49326b; /* Dark Purple Background */
+            --primary-text: #fbc5ff; /* Light Pink Text */
+            --accent-color: #6a4b9e; /* Lighter Purple for Buttons */
+            --navbar-footer-bg: #321d4e; /* Darker Purple for Navbar and Footer */
+        }
+        body {
+            background-color: var(--primary-bg);
+            color: var(--primary-text);
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        main {
+            flex: 1;
+        }
+        .navbar, .footer {
+            background-color: var(--navbar-footer-bg);
+        }
+        .btn-primary {
+            background-color: var(--accent-color);
+            border-color: var(--accent-color);
+        }
+        .btn-primary:hover {
+            background-color: #5a3b8e;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+        .section {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out; /* Added ease-out for smoother animation */
+            padding: 40px 0;
+        }
+        .section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .card {
+            background-color: #fff;
+            color: var(--primary-bg);
+            border: 1px solid var(--primary-bg);
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            padding: 15px;
+        }
+        .image-placeholder {
+            width: 100%;
+            height: 200px;
+            background-color: #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            background-size: cover; /* Added for background images */
+            background-position: center; /* Added for background images */
+        }
+        .logo-placeholder {
+            width: 50px;
+            height: 50px;
+            background-color: #ccc;
+            display: inline-block;
+            border-radius: 50%;
+        }
+        a {
+            color: var(--primary-text);
+        }
+        a:hover {
+            color: #fbc5ff;
+            text-decoration: underline;
+        }
+        .table {
+            color: var(--primary-bg);
+            background-color: #fff;
+        }
+        .table th, .table td {
+            border-color: var(--primary-bg);
+        }
+        @media (max-width: 768px) {
+            body {
+                font-size: 16px;
+            }
+            .section {
+                padding: 20px;
+            }
+        }
+
+        .btn-signup {
+            background-color: #fbc5ff;
+            color: #49326b;
+        }
+        .btn-signup:hover {
+            background-color: #e0a8ff;
+            color: #49326b;
+        }
+        .btn-login {
+            background-color: #49326b;
+            color: #fbc5ff;
+            border: 1px solid #fbc5ff;
+        }
+        .btn-login:hover {
+            background-color: #fbc5ff;
+            color: #49326b;
+        }
+        .modal-content {
+            background-color: var(--primary-bg);
+            color: var(--primary-text);
+        }
+        .modal-content .form-control {
+            background-color: var(--accent-color);
+            color: #fbc5ff;
+            border: 1px solid #fbc5ff;
+        }
+        .modal-content .btn-primary {
+            background-color: #fbc5ff;
+            color: #49326b;
+        }
+        .modal-content .btn-primary:hover {
+            background-color: #e0a8ff;
+            color: #49326b;
+        }
+        .btn-navigate {
+            background-color: #fbc5ff;
+            color: #49326b;
+        }
+        .btn-navigate:hover {
+            background-color: #e0a8ff;
+            color: #49326b;
+        }
+
+        .logo-img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        /* Added styles for dashboard sections */
+        .dashboard-section {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            flex-grow: 1;
+            background-color: #fff;
+            color: var(--primary-bg);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            /* margin-right removed for grid compatibility */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        /* Responsive fix for dashboard columns */
+        @media (max-width: 767.98px) {
+            .dashboard-section {
+                margin-bottom: 20px;
+            }
+        }
+        .dashboard-section h3 {
+            margin-bottom: 15px;
+            color: var(--primary-bg); /* Darker text for section titles */
+        }
+         .dashboard-section ul {
+            list-style: none;
+            padding: 0;
+        }
+        .dashboard-section li {
+            margin-bottom: 8px;
+            color: #333; /* Darker text for list items */
+        }
+        .dashboard-section .btn-navigate {
+            margin-top: 15px;
+        }
+        .btn-whatsapp {
+            background-color: #25D366; /* WhatsApp Green */
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            display: inline-flex; /* To align icon and text */
+            align-items: center; /* To align icon and text */
+            transition: background-color 0.3s ease;
+        }
+        .btn-whatsapp:hover {
+            background-color: #1DA851; /* Darker WhatsApp Green */
+            color: white;
+            text-decoration: none;
+        }
+        .btn-whatsapp i {
+            margin-right: 8px; /* Space between icon and text */
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark">
+            <a class="navbar-brand ml-2" href="#" aria-label="Verona's Study Group Home">Verona's Study Group</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto" id="nav-links">
+                    </ul>
+            </div>
+        </nav>
+    </header>
+
+    <main id="main-content">
+        </main>
+
+    <footer class="footer py-3">
+        <div class="container text-center">
+            <p>© 2025 Verona's Study Group |
+               <a href="#privacy" onclick="showPrivacy()" style="color: var(--primary-text);">POPIA</a> |
+               <a href="#terms" onclick="showTerms()" style="color: var(--primary-text);">Terms of Service</a>
+            </p>
+        </div>
+    </footer>
+
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="loginModalLabel">Login</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                </div>
+                <div class="modal-body">
+                    <form id="loginForm">
+                        <div class="form-group">
+                            <label for="login-username">Username</label>
+                            <input type="text" class="form-control" id="login-username" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="login-password">Password</label>
+                            <input type="password" class="form-control" id="login-password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Login</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="registerModalLabel">Register</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                </div>
+                <div class="modal-body">
+                    <form id="registerForm">
+                        <div class="form-group">
+                            <label for="reg-username">Username</label>
+                            <input type="text" class="form-control" id="reg-username" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="reg-password">Password</label>
+                            <input type="password" class="form-control" id="reg-password" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Register</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="helpModal" tabindex="-1" aria-labelledby="helpModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="helpModalLabel">Help</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                </div>
+                <div class="modal-body">
+                    <p>Log in first to access your dashboard, materials, forum, progress, and study groups for your IIE Programme</p>
+                    <p>For any issues, please contact Verona at</p>
+                    <a href="https://wa.me/+27824598544" target="_blank" class="btn btn-whatsapp">
+                        <i class="fab fa-whatsapp"></i> Contact on WhatsApp
+                    </a>
+                    <p class="mt-3">If you are a new user, please register to access the platform.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        // Data storage setup
+        let currentUser = localStorage.getItem('currentUser');
+        const users = JSON.parse(localStorage.getItem('users')) || {};
+        const leaderboard = [
+            { name: "Thikho", score: 100 },
+            { name: "Phumudzo", score: 95 },
+            { name: "Mukona", score: 90 },
+            { name: "Romeo", score: 85 },
+            { name: "Lutendo", score: 80 },
+            { name: "Junior", score: 75 },
+            { name: "Mulalo", score: 70 },
+            { name: "Thangi", score: 65 },
+            { name: "Thabiso", score: 60 },
+            { name: "Justin", score: 0 }
+        ];
+        const forumPosts = [
+            { title: "PROG5121 Loops Issue", content: "Struggling with loops in Q3 of the assignment. Help?", replies: ["Justin > Use a for loop!", "Mukona > See lecture 5 notes."] },
+            { title: "HCIN6221 UI Tips", content: "How to make a user-friendly interface for our project?", replies: ["Thikho > Focus on simplicity"] },
+            { title: "BUSA7311 Exam Prep", content: "What topics should we focus on for the exam?", replies: ["Romeo > Past papers are key!", "Thabiso > Don't forget about case studies."] },
+            { title: "ITRM7311 Project Ideas", content: "Looking for project ideas for ITRM7311.", replies: ["Lutendo > How about a task management app?"] }
+        ];
+        const studyGroups = [
+            { name: "PROG5121 Study Group", description: "For Programming 1A students to collaborate." },
+            { name: "HCIN6221 Team", description: "Work on Human Computer Interaction projects together." },
+            { name: "BUSA7311 Study Circle", description: "Business Systems students sharing resources." },
+            { name: "ITRM7311 Project Team", description: "Collaborate on ITRM7311 projects." }
+        ];
+        const progressGoals = [
+            { name: "Finish PROG5121 Assignment", completed: true },
+            { name: "Draft HCIN6221 Prototype", completed: false },
+            { name: "Study for BUSA7311 Exam", completed: false },
+            { name: "Complete ITRM7311 Project", completed: true }
+
+        ];
+
+        // Function to update navigation links based on login status
+        function updateNav() {
+            const navLinks = document.getElementById('nav-links');
+            if (!navLinks) return; // Ensure navLinks exists
+
+            if (currentUser) {
+                // Logged in user navigation
+                navLinks.innerHTML = `
+                    <li class="nav-item"><a class="nav-link" href="#dashboard">Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#materials">Materials</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#forum">Forum</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#progress">Progress</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#study-groups">Study Groups</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#leaderboard">Leaderboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" data-toggle="modal" data-target="#helpModal">Help</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" id="logout">Logout</a></li>
+                `;
+                // Attach logout listener after the element is added to the DOM
+                document.getElementById('logout').addEventListener('click', (e) => {
+                    e.preventDefault(); // Prevent default link behavior
+                    logout();
+                });
+            } else {
+                // Not logged in user navigation
+                navLinks.innerHTML = `
+                    <li class="nav-item active"><a class="nav-link" href="#home">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" data-toggle="modal" data-target="#helpModal">Help</a></li>
+                `;
+            }
+        }
+
+        // Function to initialize authentication state from localStorage
+        function initAuth() {
+            currentUser = localStorage.getItem('currentUser');
+            updateNav(); // Update navigation immediately based on initial auth state
+        }
+
+        // Function to handle section visibility animation
+        const observeSections = () => {
+            const sections = document.querySelectorAll('.section');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    } else {
+                        // Optional: remove 'visible' class when out of view
+                        // entry.target.classList.remove('visible');
+                    }
+                });
+            }, {
+                threshold: 0.1 // Trigger when 10% of the section is visible
+            });
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+        };
+
+
+        // Function to handle image placeholders
+        function initImages() {
+            const images = {
+                'study-materials': 'https://images.unsplash.com/photo-1513258496099-48168024aec0',
+                'discussion': 'https://images.unsplash.com/photo-1461749280684-dccba630e2f6',
+                'progress': 'https://images.unsplash.com/photo-1503676382389-4809596d5290',
+                'forum': 'https://images.unsplash.com/photo-1515378791036-0648a3ef77b2',
+                'hero': 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173',
+                'contact-page-stock': 'https://placehold.co/600x400/6a4b9e/fbc5ff?text=Contact+Us', // New stock photo for contact page
+                'study-group': 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1'
+            };
+
+            document.querySelectorAll('.image-placeholder').forEach(placeholder => {
+                const type = placeholder.getAttribute('data-type') || 'study-materials';
+                if (images[type]) {
+                    placeholder.style.backgroundImage = `url(${images[type]}?auto=format&fit=crop&w=400&q=80)`;
+                    placeholder.textContent = ''; // Remove placeholder text
+                }
+            });
+        }
+
+
+        // --- Content Rendering Functions ---
+
+        function getHomeContent() {
+            return `
+                <section id="home" class="section hero">
+                    <div class="container text-center">
+                        <h1>Welcome to Verona's Study Group</h1>
+                        <p>Collaborate, Learn, Succeed</p>
+                        <div class="mt-4">
+                            <a href="#" data-toggle="modal" data-target="#registerModal" class="btn btn-signup btn-lg">Sign Up Now</a>
+                            <a href="#" data-toggle="modal" data-target="#loginModal" class="btn btn-login btn-lg ml-2">Login</a>
+                        </div>
+                    </div>
+                </section>
+                <section id="features" class="section">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-4 text-center"> 
+                                <div class="image-placeholder mx-auto" data-type="study-materials"></div> 
+                                <h3>Share Study Materials</h3>
+                                <p>Access notes and resources for your IIE Programme.</p>
+                            </div>
+                            <div class="col-md-4 text-center"> 
+                                <div class="image-placeholder mx-auto" data-type="discussion"></div> 
+                                <h3>Engage in Discussions</h3>
+                                <p>Join forums for IT Business Systems topics.</p>
+                            </div>
+                            <div class="col-md-4 text-center"> 
+                                <div class="image-placeholder mx-auto" data-type="progress"></div> 
+                                <h3>Track Your Progress</h3>
+                                <p>Monitor goals for your degree modules.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            `;
+        }
+
+        function getDashboardContent() {
+            const username = currentUser ? currentUser : 'Guest';
+            return `
+                <section id="dashboard" class="section">
+                    <div class="container">
+                        <h2>Welcome, ${username}!</h2>
+                        <div class="row">
+                            <div class="col-md-6 mb-4 d-flex">
+                                <div class="dashboard-section w-100">
+                                    <h3>Recent Study Materials</h3>
+                                    <ul><li>PROG5121 Notes</li><li>HCIN6221 Guidelines</li></ul>
+                                    <a href="#materials" class="btn btn-navigate">Go to Materials</a>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-4 d-flex">
+                                <div class="dashboard-section w-100">
+                                    <h3>Forum Activity</h3>
+                                    <p>Latest: "Help with PROG5121"</p>
+                                    <a href="#forum" class="btn btn-navigate">Go to Forum</a>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-4 d-flex">
+                                <div class="dashboard-section w-100">
+                                    <h3>Progress</h3>
+                                    <p>${progressGoals.filter(goal => !goal.completed).length} pending goals.</p>
+                                    <a href="#progress" class="btn btn-navigate">Go to Progress</a>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-4 d-flex">
+                                <div class="dashboard-section w-100">
+                                    <h3>Study Groups</h3>
+                                    <p>${studyGroups.length} active group${studyGroups.length !== 1 ? 's' : ''}.</p>
+                                    <a href="#study-groups" class="btn btn-navigate">Go to Study Groups</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            `;
+        }
+
+        function getLeaderboardContent() {
+            return `
+                <section id="leaderboard" class="section">
+                    <div class="container">
+                        <h2>Leaderboard</h2>
+                        <table class="table leaderboard-table">
+                            <thead><tr><th>Name</th><th>Score</th></tr></thead>
+                            <tbody>${leaderboard.map(user => `<tr><td>${user.name}</td><td>${user.score}</td></tr>`).join('')}</tbody>
+                        </table>
+                    </div>
+                </section>
+            `;
+        }
+
+        function getMaterialsContent() {
+            return `
+                <section id="materials" class="section">
+                    <div class="container">
+                        <h2>Study Materials</h2>
+                        <p>Access additional resources here.</p>
+                        <div class="row">
+                            <div class="col-md-6 mb-4">
+                                <h4>PROG5121: Intro to Programming</h4>
+                                <div class="embed-responsive embed-responsive-16by9">
+                                    <iframe class="embed-responsive-item" src="https://youtu.be/xTtL8E4LzTQ?si=6HKu6t3AZiaWvXyP" title="PROG5121 Video Placeholder" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-4">
+                                <h4>WEDE5020: Web Development Basics</h4>
+                                <div class="embed-responsive embed-responsive-16by9">
+                                    <iframe class="embed-responsive-item" src="https://youtu.be/HGTJBPNC-Gw?si=eQf15Njw4Kf8lICm" title="WEDE5020 Video Placeholder" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <h4>Additional Resources</h4>
+                                <ul style="list-style-type: none; padding-left: 0;">
+                                    <li>PROG5121 Notes (PDF)</li>
+                                    <li>HCIN6221 Lecture Slides</li>
+                                    <li>BUSA7311 Case Studies</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            `;
+        }
+
+        function getForumContent() {
+            return `
+                <section id="forum" class="section">
+                    <div class="container">
+                        <h2>Forum</h2>
+                        <div class="image-placeholder" data-type="forum"></div>
+                        ${forumPosts.map(post => `
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <h5 class="card-title">${post.title}</h5>
+                                    <p class="card-text">${post.content}</p>
+                                    <p class="card-text"><small class="text-muted"><strong>Replies:</strong> ${post.replies.join(', ')}</small></p>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </section>
+            `;
+        }
+
+        function getProgressContent() {
+            return `
+                <section id="progress" class="section">
+                    <div class="container">
+                        <h2>Progress Tracking</h2>
+                        <div class="image-placeholder" data-type="progress"></div>
+                        ${progressGoals.map(goal => `
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <p class="card-text">${goal.name} - ${goal.completed ? 'Completed' : 'Pending'}</p>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </section>
+            `;
+        }
+
+        function getStudyGroupsContent() {
+            return `
+                <section id="study-groups" class="section">
+                    <div class="container">
+                        <h2>Study Groups</h2>
+                        <div class="image-placeholder" data-type="study-group"></div>
+                        ${studyGroups.map(group => `
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <h5 class="card-title">${group.name}</h5>
+                                    <p class="card-text">${group.description}</p>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </section>
+            `;
+        }
+
+        function getAboutContent() {
+            return `
+                <section id="about" class="section">
+                    <div class="container">
+                        <h2>About Verona</h2>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <img src="assets/verona.jpg" alt="Verona's Picture" class="img-fluid rounded" style="aspect-ratio: 3/4; object-fit: cover;">
+                                <p class="mt-2">Thikho Verona Mudzielwana</p>
+                                <p>Student Number: ST10381979</p>
+                                <p>IIE Bachelor of IT in Business Systems</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p>Verona is a final-year student in the Bachelor of IT in Business Systems degree. She created this website to support her peers in their studies.</p>
+                                <p>Verona is passionate about technology and education, and she believes in the power of collaboration to enhance learning experiences and outcomes.</p>
+                                <p>She is committed to providing a platform where students can share resources, discuss topics, and support each other in their academic journey. She is also an advocate for mental health awareness and encourages students to take care of their well-being while pursuing their studies.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            `;
+        }
+
+        function getContactContent() {
+            return `
+                <section id="contact" class="section">
+                    <div class="container">
+                        <h2>Contact Information</h2>
+                        
+                        <p><strong>Name:</strong> Thikho Verona Mudzielwana</p>
+                        <p><strong>Email:</strong> St10381979@rcconnect.edu.za</p>
+                        <p><strong>Phone:</strong> +27824598544</p>
+                        <p>
+                            <a href="https://wa.me/+27824598544" target="_blank" class="btn btn-whatsapp">
+                                <i class="fab fa-whatsapp"></i> WhatsApp Verona
+                            </a>
+                        </p>
+                    </div>
+                </section>
+            `;
+        }
+
+         function getPrivacyContent() { // This is the POPIA content
+            return `
+                <section id="privacy" class="section">
+                    <div class="container">
+                        <h2>Privacy Policy (POPIA Compliance)</h2>
+                        <p><strong>Introduction:</strong> Verona's Study Group ("we", "us", "our") is committed to protecting your privacy and ensuring that your personal information is collected and used appropriately, lawfully, and transparently in compliance with the Protection of Personal Information Act (POPIA) of South Africa.</p>
+                        <p><strong>Information We Collect:</strong> We collect information you provide directly to us when you register for an account, such as your username. We may also collect information about your usage of the platform, such as pages visited and interactions with features, to improve your experience and ensure security.</p>
+                        <p><strong>How We Use Your Information:</strong> Your personal information is used solely for the purpose of providing and improving the Verona's Study Group platform. This includes:
+                            <ul>
+                                <li>Creating and managing your account.</li>
+                                <li>Personalizing your experience on the platform.</li>
+                                <li>Communicating with you about platform updates or important notices.</li>
+                                <li>Monitoring and analyzing usage to improve our services.</li>
+                                <li>Ensuring the security of the platform.</li>
+                            </ul>
+                        </p>
+                        <p><strong>Information Sharing and Disclosure:</strong> We do not share your personal information with third parties without your explicit consent, except where required by law or to protect our rights.</p>
+                        <p><strong>Data Security:</strong> We implement reasonable security measures to protect your personal information from unauthorized access, use, or disclosure. However, no method of transmission over the Internet or electronic storage is 100% secure.</p>
+                        <p><strong>Your Rights:</strong> You have the right to:
+                            <ul>
+                                <li>Access the personal information we hold about you.</li>
+                                <li>Request correction of inaccurate personal information.</li>
+                                <li>Request deletion of your personal information, subject to legal and contractual restrictions.</li>
+                                <li>Object to the processing of your personal information.</li>
+                                <li>Lodge a complaint with the Information Regulator if you believe your rights have been infringed.</li>
+                            </ul>
+                        </p>
+                        <p><strong>Contact Us:</strong> If you have any questions or concerns about this Privacy Policy or our data practices, please contact us using the details provided on the Contact page.</p>
+                        <p><strong>Changes to this Policy:</strong> We may update this Privacy Policy from time to time. We will notify you of any significant changes by posting the new policy on the platform.</p>
+                    </div>
+                </section>
+            `;
+        }
+
+        function getTermsContent() {
+            return `
+                <section id="terms" class="section">
+                    <div class="container">
+                        <h2>Terms of Service</h2>
+                        <p><strong>1. Acceptance of Terms:</strong> By accessing or using Verona's Study Group (the "Platform"), you agree to be bound by these Terms of Service ("Terms"). If you do not agree to all of these Terms, do not use the Platform.</p>
+                        <p><strong>2. User Eligibility:</strong> The Platform is intended for use by students and educators, primarily those associated with the IIE Programme. You must be eligible to use the Platform and affirm that you are of legal age to form a binding contract or have obtained parental or guardian consent.</p>
+                        <p><strong>3. User Accounts:</strong>
+                            <ul>
+                                <li>You are responsible for maintaining the confidentiality of your account login information (username and password).</li>
+                                <li>You are responsible for all activities that occur under your account.</li>
+                                <li>You agree to notify us immediately of any unauthorized use of your account.</li>
+                            </ul>
+                        </p>
+                        <p><strong>4. User Conduct:</strong> You agree not to use the Platform to:
+                            <ul>
+                                <li>Post, upload, or distribute any content that is unlawful, harmful, threatening, abusive, harassing, defamatory, vulgar, obscene, libelous, invasive of another's privacy, hateful, or racially, ethnically, or otherwise objectionable.</li>
+                                <li>Impersonate any person or entity.</li>
+                                <li>Violate any applicable local, national, or international law.</li>
+                                <li>Engage in any activity that interferes with or disrupts the Platform.</li>
+                                <li>Misuse the platform for purposes other than collaborative study and resource sharing.</li>
+                            </ul>
+                        </p>
+                        <p><strong>5. Content:</strong>
+                            <ul>
+                                <li>You retain ownership of any intellectual property rights that you hold in the content you submit to the Platform.</li>
+                                <li>By submitting content, you grant Verona's Study Group a worldwide, non-exclusive, royalty-free license to use, reproduce, modify, and distribute your content in connection with operating and promoting the Platform.</li>
+                                <li>We reserve the right to remove any content that violates these Terms or is otherwise objectionable.</li>
+                            </ul>
+                        </p>
+                        <p><strong>6. Disclaimer of Warranties:</strong> Verona's Study Group is provided "as is" and "as available" without any warranties of any kind, express or implied. We do not warrant that the Platform will be uninterrupted, error-free, or secure.</p>
+                        <p><strong>7. Limitation of Liability:</strong> To the fullest extent permitted by law, Verona's Study Group shall not be liable for any indirect, incidental, special, consequential, or punitive damages, or any loss of profits or revenues, whether incurred directly or indirectly, or any loss of data, use, goodwill, or other intangible losses, resulting from your use of the Platform.</p>
+                        <p><strong>8. Modification of Terms:</strong> We reserve the right to modify these Terms at any time. We will provide notice of any significant changes. Your continued use of the Platform after such changes constitutes your acceptance of the new Terms.</p>
+                        <p><strong>9. Governing Law:</strong> These Terms shall be governed by and construed in accordance with the laws of South Africa.</p>
+                        <p><strong>10. Contact:</strong> If you have any questions about these Terms, please contact us via the details on the Contact page.</p>
+                    </div>
+                </section>
+            `;
+        }
+
+        // --- Navigation and Content Loading ---
+
+        function handleNavigation(hash) {
+            const mainContentElement = document.getElementById('main-content');
+            if (!mainContentElement) {
+                console.error("Main content element not found!");
+                return;
+            }
+
+            let content = '';
+            let requiresAuth = false;
+
+            const routes = {
+                'home': { content: getHomeContent, auth: false },
+                'about': { content: getAboutContent, auth: false },
+                'contact': { content: getContactContent, auth: false },
+                'privacy': { content: getPrivacyContent, auth: false }, // POPIA page
+                'terms': { content: getTermsContent, auth: false },     // Terms page
+                'dashboard': { content: getDashboardContent, auth: true },
+                'materials': { content: getMaterialsContent, auth: true },
+                'forum': { content: getForumContent, auth: true },
+                'progress': { content: getProgressContent, auth: true },
+                'study-groups': { content: getStudyGroupsContent, auth: true },
+                'leaderboard': { content: getLeaderboardContent, auth: true }
+            };
+
+            const routeKey = hash.startsWith('#') ? hash.substring(1) : hash; // Handle hash with or without #
+            const route = routes[routeKey] || routes['home'];
+            requiresAuth = route.auth;
+
+            if (requiresAuth && !currentUser) {
+                console.log(`Access to ${routeKey} denied. Redirecting to home.`);
+                window.location.hash = 'home';
+                return;
+            }
+
+            content = route.content();
+            mainContentElement.innerHTML = content;
+
+            initImages();
+            observeSections();
+
+            document.querySelectorAll('#nav-links .nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            const activeLink = document.querySelector(`#nav-links a[href="#${routeKey}"]`);
+            if (activeLink) {
+                activeLink.closest('.nav-item').classList.add('active');
+            } else if (routeKey === 'home' && !currentUser) {
+                 const homeLink = document.querySelector('#nav-links a[href="#home"]');
+                 if (homeLink) homeLink.closest('.nav-item').classList.add('active');
+            }
+        }
+
+
+        // --- Event Listeners ---
+
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('reg-username').value;
+            const password = document.getElementById('reg-password').value;
+
+            if (users[username]) {
+                alert('Username already exists.');
+            } else {
+                users[username] = password;
+                localStorage.setItem('users', JSON.stringify(users));
+                alert('Registration successful! Please log in.');
+                $('#registerModal').modal('hide');
+                document.getElementById('reg-username').value = '';
+                document.getElementById('reg-password').value = '';
+                $('#loginModal').modal('show');
+            }
+        });
+
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const username = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
+
+            if (users[username] && users[username] === password) {
+                localStorage.setItem('currentUser', username);
+                currentUser = username;
+                $('#loginModal').modal('hide');
+                document.getElementById('login-username').value = '';
+                document.getElementById('login-password').value = '';
+                updateNav();
+                window.location.hash = 'dashboard';
+            } else {
+                alert('Invalid username or password.');
+            }
+        });
+
+        function logout() {
+            localStorage.removeItem('currentUser');
+            currentUser = null;
+            updateNav();
+            window.location.hash = 'home';
+        }
+
+        // Updated to directly set hash for navigation, which will be handled by handleNavigation
+        function showPrivacy() {
+             window.location.hash = 'privacy';
+        }
+
+        function showTerms() {
+             window.location.hash = 'terms';
+        }
+
+
+        // --- Initialization ---
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initAuth();
+            const initialHash = window.location.hash ? window.location.hash.substring(1) : 'home';
+
+            const routesForInitCheck = {
+                 'dashboard': { auth: true }, 'materials': { auth: true }, 'forum': { auth: true },
+                 'progress': { auth: true }, 'study-groups': { auth: true }, 'leaderboard': { auth: true }
+            };
+            const requiresAuthForInitial = routesForInitCheck[initialHash]?.auth || false;
+
+            if (requiresAuthForInitial && !currentUser) {
+                 handleNavigation('home');
+            } else {
+                 handleNavigation(initialHash || 'home'); // Ensure 'home' if initialHash is empty
+            }
+
+            window.addEventListener('hashchange', () => {
+                const hash = window.location.hash ? window.location.hash.substring(1) : 'home';
+                handleNavigation(hash || 'home'); // Ensure 'home' if hash is empty
+            });
+        });
+
+    </script>
+</body>
+</html>
